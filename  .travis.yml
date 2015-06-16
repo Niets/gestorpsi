@@ -8,12 +8,6 @@ env:
   - DJANGO=1.4
   - DB=mysql
 
-test:
-  adapter: mysql
-  database: gestorpsi
-  username:
-  encoding: utf8
-
 before_install:
 	- sudo apt-get update -qq
 	- sudo apt-get install -qq [packages list]
@@ -21,23 +15,18 @@ before_install:
 
 
 install:
-  - pip install virtualenvwrapper
-  - echo 'source `which virtualenvwrapper.sh`' >> $HOME/.bashrc   # it adds virtualenvwrapper commands to bash
-  - source $HOME/.bashrc  # don't need to reload bash session to have the commands available to you
-  - mkvirtualenv gestorpsi    # creates a virtual environment(just like rvm does to Ruby and maven does to Java projects)
-  - pip install ipython flake8    # it installs interactive python shell and flake8 code validation to your virtual environment
+  - pip install flake8 coveralls unittest2
   - pip install -q Django==$DJANGO --use-mirrors
-  - pip install -q -e . --use-mirrors
-  - python setup.py -q install
-  - workon gestorpsi
   - pip install -r requirements.txt
-  - python manage.py syncdb
-  - python manage.py migrate
-  - cd scripts
-  - python creategroups.py
 
 before_script:
+  - mv gestorpsi/settings.py.TRAVIS gestorpsi/settings.py
+  - mysqladmin create gpsi -u travis
+  - python manage.py syncdb --noinput
+  - python manage.py migrate
+
+  - workon gestorpsi
 
 script:
-  - workon gestorpsi
+  - ./run_tests.sh
   - python manage.py test

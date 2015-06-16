@@ -1,0 +1,13 @@
+services: mysql
+
+
+before install:
+  - pip install virtualenvwrapper
+  - echo 'source `which virtualenvwrapper.sh`' >> $HOME/.bashrc   # it adds virtualenvwrapper commands to bash
+  - source $HOME/.bashrc  # don't need to reload bash session to have the commands available to you
+  - mkvirtualenv gestorpsi    # creates a virtual environment(just like rvm does to Ruby and maven does to Java projects)
+  - pip install ipython flake8    # it installs interactive python shell and flake8 code validation to your virtual environment
+
+
+install:
+  - python setup.py -q install

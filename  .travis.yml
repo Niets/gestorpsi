@@ -1,13 +1,43 @@
 services: mysql
 
+language: python
 
-before install:
+env:
+  - DJANGO=1.2.7
+  - DJANGO=1.3.1
+  - DJANGO=1.4
+  - DB=mysql
+
+test:
+  adapter: mysql
+  database: gestorpsi
+  username:
+  encoding: utf8
+
+before_install:
+	- sudo apt-get update -qq
+	- sudo apt-get install -qq [packages list]
+	- mysql -e "create database IF NOT EXISTS gestorpsi;" -uroot
+
+
+install:
   - pip install virtualenvwrapper
   - echo 'source `which virtualenvwrapper.sh`' >> $HOME/.bashrc   # it adds virtualenvwrapper commands to bash
   - source $HOME/.bashrc  # don't need to reload bash session to have the commands available to you
   - mkvirtualenv gestorpsi    # creates a virtual environment(just like rvm does to Ruby and maven does to Java projects)
   - pip install ipython flake8    # it installs interactive python shell and flake8 code validation to your virtual environment
-
-
-install:
+  - pip install -q Django==$DJANGO --use-mirrors
+  - pip install -q -e . --use-mirrors
   - python setup.py -q install
+  - workon gestorpsi
+  - pip install -r requirements.txt
+  - python manage.py syncdb
+  - python manage.py migrate
+  - cd scripts
+  - python creategroups.py
+
+before_script:
+
+script:
+  - workon gestorpsi
+  - python manage.py test

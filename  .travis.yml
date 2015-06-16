@@ -11,9 +11,7 @@ env:
 before_install:
 	- mysql -e "create database IF NOT EXISTS gestorpsi;" -uroot
 
-
 install:
-  - pip install flake8 coveralls unittest2
   - pip install -q Django==$DJANGO --use-mirrors
   - pip install -r requirements.txt
 
@@ -26,5 +24,4 @@ before_script:
   - workon gestorpsi
 
 script:
-  - ./run_tests.sh
   - python manage.py test

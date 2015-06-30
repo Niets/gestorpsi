@@ -14,7 +14,7 @@ before_script:
 
 script:
   - ./run_tests.sh
-  - coverage run --source=home manage.py test home
+  - coverage run manage.py test
   #- flake8 gestorpsi
 
 after_success:
